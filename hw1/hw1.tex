@@ -98,7 +98,9 @@ hypothesis.
 Show that if there is a $\gamma$-approximate $(\alpha,\beta)$ Occam
 algorithm for $\C$ then there is a $\gamma$-PAC learning algorithm for $C$.
 \end{problem}
-fdsa
+We are given a $\gamma$-approximate Occam algorithm, meaning it finds a hypothesis $h$ that is not perfectly consistent but misclassifies at most a $\gamma$ fraction of the training examples and the hypothesis space $H$ is restricted in size. The goal is to show that with high probability the Occam algorithm does not select a bad hypothesis when trained on a finite sample of size $m$, still allowing for PAC-learning, meaning we can find a hypothesis with error at most $\gamma + \epsilon$ with high probability. \\
+A hypothesis is bad if the true error $P(h(x) \neq f(x))$ exceeds $\gamma + \epsilon$. If we sample enough data points, we should be able to identify and eliminate bad hypotheses with high probability. The probability of a bad hypothesis looking good on a small sample is exponentially small via Chernoff bounds. \\
+The Occam algorithm restricts the number of hypotheses $|H|$. We apply the union bound to make sure no bad hypothesis is chosen, ensuring that $$P(\text{choosing a bad } h) \leq |H|e^{-2m(\epsilon - \gamma)^2}$$ which is at most $\delta$. Solving for $m$, we get $$O\left(\frac{1}{(\epsilon-\gamma)^2} \log \frac{|H|}{\delta}\right) = m$$ By substituting the Occam complexity bound for $|H|$, we ensure the sample complexity remains polynomial in $1/\epsilon$ and $\log(1/\delta)$, satisfying the PAC-learning requirement.
 
 %%%%%% PROBLEM %%%%%%
 \begin{problem}(15pt) \textbf{Learning unions of halfspaces is NP-hard.} A {\em linear threshold function} or a {\em halfspace} is a function
@@ -120,6 +122,8 @@ at least $2/3$, $R$ outputs a $k$-coloring of $G$.
 
 \hint Consider adding the example $\langle 1^n, - \rangle$ to the reduction you saw in class.
 \end{problem}
+
+fdsa
 
 
 %%%%%% PROBLEM %%%%%%
