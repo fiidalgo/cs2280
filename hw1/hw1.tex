@@ -66,7 +66,10 @@ The number of negative samples needed is at most $O(n)$ since we only need to pl
 \begin{hint}
 	Note that $x \oplus y$ is equal to $x + y \pmod 2$. Additionally, searching for an Occam algorithm might be easier than working with $\epsilon$ and $\delta$.
 \end{hint}
-
+Each parity function is defined by a subset $S \subseteq \{1,\ldots,n\}$. Learning the function means discovering the unknown set $S$ using examples $(x, f_S(x))$ where $x$ is an $n$-bit binary vector and $f_S(x)$ is the parity (XOR sum) of the bits in $S$, i.e., $f_S(x) = \bigoplus_{i \in S}x_i$. The goal is to figure out $S$ from training data. \\
+The XOR operation is equivalent to addition modulo 2, i.e., $$x \oplus y = (x + y) \mod 2$$ If we collect enough labeled examples $(x, f_S(x))$ then we can solve a system of linear equations to determine $S$. To learn $S$, we observe that each training example $(x, f_S(x))$ gives us one linear equation with $n$ unknowns, i.e., $$x_{i_1} \oplus x_{i_2} \oplus \ldots \oplus x_{i_k}=f_S(x)$$ \\
+The algorithm is to collect $n$ independent samples $(x, f_S(x))$ and use them to construct a system of $n$ linear equations in $n$ variables and solve for $S$ using Gaussian elimination. \\
+Solving for $S$ requires at most $n$ independent equations, thus we only need $O(n)$ samples. Gaussian elimination runs in $O(n^3)$ time, so the overall time complexity is $O(n^3)$. As Gaussian elimination is deterministic, solving for $S$ is guaranteed to be correct, therefore satisfying the PAC-learning requirement.
 
 
 
