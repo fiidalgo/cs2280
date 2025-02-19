@@ -80,7 +80,9 @@ running time's dependence on $\delta$.)
 \begin{hint}
 	Can we boost our confidence by running the original PAC-learning algorithm multiple times?
 \end{hint}
-
+We start with a PAC-learning algorithm that outputs a hypothesis function $h$ satisfying the PAC-learning requirements. Instead of relying on a single hypothesis, we run the algorithm $k$ times and gather multiple candidate hypotheses $h_1, h_2, \ldots, h_k$. Each hypothesis is independetly trained on different data samples. \\
+To create a more robust classifier, we can use majority voting. Given an input $x$, we compute $h_i(x)$ for each of the $k$ hypotheses and the final output is determined by whichever label appears most frequently. Since each hypothesis is independent, the probability of many of them making an error at the same time follows a Chernoff bound. If $h$ has error upper-bounded by $\epsilon$, the probability that a majority of $k$ hypotheses failing is at most $e^{-\frac{\epsilon k}{2}}$. \\
+The probability of the majority of hypotheses failing is at most $\delta$ if we set $k = \frac{2}{\epsilon}\ln \frac{2}{\delta}$. The time complexity of running the algorithm $k$ times is $O(k \cdot \text{time}(n, \epsilon, \delta))$ which is polynomial in $\log(1/\delta), 1/\epsilon, n, \text{size}(c)$. This means we can achieve the same accuracy with confidence boosted exopnentially, leading to a sample complexity that depends on $\log(1/\delta)$.
 
 
 \begin{problem} (10pt) \textbf{Approximate Occam algorithm.}
