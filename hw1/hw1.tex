@@ -141,7 +141,9 @@ Let $h = h_1 \wedge h_2$, where $h_1$, $h_2$ are obtained from feeding the posit
 examples of $c_1\wedge c_2$. What do we know about the relationship between $c_1$
 and $h_1$?
 \end{hint}
-
+We have two separate learners $L_1$ and $L_2$, each can learn concepts from $C_1$ or $C_2$ respectively using only positive examples from the target concept. The goal is to learn the conjunction $c_1 \wedge c_2$, i.e., a point is labeled positive iff it is positive for both $c_1$ and $c_2$. \\
+The first step is draw independently and identically distributed positive samples from the target concept $c=c_1 \wedge c_2$ which are guaranteed to be positive for both $c_1$ and $c_2$. We then feed these positive samples to $L_1$ and $L_2$ which treat them as samples coming from $c_1$ and $c_2$ respectively as they each label these samples positively. Let $h_1$ and $h_2$ be the hypotheses output by $L_1$ and $L_2$ respectively. Define $h=h_1 \wedge h_2$ be the combined hypothesis that captures the intersection of the sets recognized by $h_1$ and $h_2$. \\
+If $h_1$ is $\epsilon/2$-accurate for $c_1$ on positive examples and $h_2$ is $\epsilon/2$-accurate for $c_2$ on positive examples, then $h_1 \wedge h_2$ will be at most $\epsilon$-inaccurate for $c_1 \wedge c_2$. The union bound handles confidence, i.e., if each learner individually succeeds with high probability, then the combined event also has high probability. The sample size and time complexity remain polynomial because you draw only one batch of positive examples for $c$. Both learners run in time polynomial in $1/\epsilon, 1/\delta, n, \text{size}(c)$, so the combined learner also runs in time polynomial in $1/\epsilon, 1/\delta, n, \text{size}(c)$, satisfying the PAC-learning requirement and hence, $C_1 \wedge C_2$ is PAC-learnable from positive examples only.
 
 %%%%%% PROBLEM %%%%%%
 
