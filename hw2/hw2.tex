@@ -1,0 +1,127 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{thmtools}
+\usepackage{bbm}
+
+\declaretheorem{theorem}
+\declaretheorem[style=definition]{problem}
+\declaretheorem[style=remark, numbered=no]{hint}
+\declaretheorem[style=remark, numbered=no]{note}
+
+\newcommand*{\C}{{\mathcal C}}
+\newcommand*{\Hp}{{\mathcal H}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\Z}{\mathbb{Z}}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\1}{\mathbbm{1}}
+\DeclareMathOperator{\Ber}{Ber}
+\DeclareMathOperator{\size}{size}
+\DeclareMathOperator{\VCD}{VCD}
+
+
+\begin{document}
+
+\begin{flushright}
+			Leslie G. Valiant \\
+			TFs: Aayush Karan \& Kevin Cong
+\end{flushright}
+
+\begin{center}
+\textbf{CS 228: Computational Learning Theory} \\
+\textbf{Homework 2}\\ \textbf{Due: March 12, 11:59PM}
+\end{center}
+
+\textbf{Policy reminders:} You are strongly encouraged to type your solutions using LATEX. You may
+discuss problems with your classmates, but not merely copy each others solutions. You must write
+all solutions by yourself, list your collaborators on your problem sets and also appropriately cite
+any resources outside of the class materials that you have used. You are not allowed to look up
+solutions to the problems. Please do not use LLMs or LLM-assisted tools for finding solutions to the
+problems. 
+\rule{\linewidth}{0.4pt}
+
+\begin{problem} [10pts] \textbf{Efficient Evaluability is Necessary.}
+The definition of learning in the PAC model requires that hypotheses produced by a learning algorithms are evaluatable efficiently (that is, in polynomial time). In this problem you will show that this requirement is necessary for a meaningful notion of learning.
+
+Suppose we consider relaxing this restriction, and let $\Hp$ be the class of all Turing machines (not necessarily polynomial time). Show that if $\C_n$ is the class of all Boolean circuits of size at most $p(n)$ for some fixed polynomial $p(\cdot)$, then $\C$ is efficiently PAC learnable using $\Hp$.
+
+Argue that your solution shows that this relaxation trivializes the model of learning. (Hint: How could you use your solution to trivially learn other concept classes we've seen in class?)
+	
+\end{problem}
+\begin{problem} [15pts] \textbf{Infinite Mistake-Bounded Model.}
+	The \textit{Infinite Mistake-Bounded (IMB) model} is a Boolean on-line learning model where the number
+of attributes in the world may be infinite. It is assumed, however, that each example has a finite
+number of attributes assigned 1. An example is presented to the learner as a list of its positive
+attributes. The learning scenario is the same as in the (standard) mistake-bounded model.
+
+Provide an on-line learning algorithm that makes at most $\mathcal O(k \log n)$ mistakes when learning any
+monotone disjunction of $k$ literals, if every example presented to the learner has at most $n$ positive
+attributes.
+
+\textit{Note: Assume for full credit that the learner does \textit{not} know the value of $n$ in advance. For partial credit, you can use the value of $n$ in your algorithm}
+\end{problem}
+
+\begin{problem} [15 points] \textbf{Function Classes: Linear Thresholds, DNFs, and Decision Lists.} \
+	\begin{enumerate}[label=\alph*)]
+		\item Prove that any 1-decision list over $x_1,\dots,x_n$ can be expressed as a linear threshold function $\1[w \cdot x \geq \theta]$, where $w \in \R^n\setminus\{\mathbf{0}\}$, $\theta \in \R$.
+		\item Prove that the class of linear threshold functions and the class of
+		poly$(n)$-term DNF are incomparable in that neither class is contained in the
+		other.
+	\end{enumerate}
+\end{problem}
+\begin{problem}[15 points] \textbf{Perceptrons Can Make Exponentially Many Mistakes.}\
+	\begin{enumerate}[label = \alph*)]
+		\item The {\em margin} $\delta$ of a set of points $X \subseteq \{0,1\}^n$
+		labeled by a function $f$ is defined as follows.  $$\delta = \max_{w \in
+			\R^n, \|w\|_2 = 1,\ \theta \in \R} \{ \delta' \mid \forall x \in
+		X,\ |w\cdot x - \theta| \geq \delta'  \text{ and }  (w \cdot x \geq \theta
+		\text{ iff } f(x) = 1)  \}$$ (This is the $\delta$ of the
+		Perceptron algorithm.) Give a set of $O(n)$ examples on $\{0,1\}^n$ that are
+		linearly separable but for which the margin is exponentially small in $n$.
+		\item Give an example of a linear threshold function on which the Perceptron algorithm can make exponentially many mistakes.
+	\end{enumerate}
+\end{problem}
+
+\begin{problem} [10pts] \textbf{Logarithmic Mistake Bounds.} \quad
+	\begin{enumerate}[label=\alph*)]
+		\item Let $\C_n$ be a finite concept class.  Give a learning
+		algorithm for $\C_n$ which has mistake bound $\log_2|\C_n|.$  Your algorithm
+		need not be computationally efficient.
+		\item Show a concept class $\C$ for which there exists an algorithm with a mistake bound that is asymptotically better than $\log_2|\C_n|$.
+	\end{enumerate}
+\end{problem}
+
+\begin{problem}[15 points] \textbf{Robust Winnow Algorithm.}
+	In this question we examine the error robustness of the Winnow algorithm. Let $f$ be a monotone disjunction of $k$ variables. Suppose that an adversary manipulates the labels of some of the examples seen by the Winnow algorithm as it runs on $f$: during the online learning process, for some inputs $x$, the Winnow algorithm is told that the label of $x$ is $1-f(x)$ when the correct value was actually $f(x)$. When $f(x) = 1$ but the adversary flips its reported label to 0, we call this is a \emph{false negative example}. When $f(x) = 0$ but the algorithm is presented with the label 1, this is called a \emph{false positive example}.
+	
+Assume that the algorithm sees $s$ false negative examples and $t$ false positive examples during the course of its learning. Prove that the total number of mistakes the Winnow algorithm\footnote{if modified appropriately; see the note at the end of the problem statement.} will make (on examples that are labeled correctly) is $O(k \log{n} + ks + t)$.
+\end{problem}
+\begin{note}
+	You will have to modify the Winnow algorithm to get this result. In class
+	the demotion step set all weights $w_i = 0$ if $x_i = 1$. Argue why this will
+	not work in the above setting and show that if instead you set $w_i \leftarrow
+	w_i/2$, you will get the required bounds.
+\end{note}
+
+
+\begin{problem} [15pts] \textbf{VC Dimension of Linear Halfspaces.}
+	Let $\C$ be the concept class of linear halfspaces in $\R^n$. A halfspace is specified by an inequality of the form $c(x) = \1[w \cdot x \geq \theta]$, where $w \in \R^n\setminus\{\mathbf{0}\}$ and $\theta \in \R$. Prove that the VC dimension of $\C$ is $n+1$.
+\end{problem}
+\begin{note}
+	You may use the following result without proof:
+	\begin{theorem}[\textbf{Radon's theorem}]
+		Let $S =
+		\{x^{(1)},\dots,x^{(m)}\} \subset \R^n$ be a set of $m$
+		points in $\R^n.$  The {\em convex hull} of $S$ is the set
+		\[
+		\{ z \in \R^n \mid \exists \lambda_1,\ldots,\lambda_m \text{\ s.t.\ } z = \sum_{i=1}^m \lambda_i x^{(i)}, \text{\ with each\ }\lambda_i \geq 0 \text{\ and\ } \sum_{i=1}^m \lambda_i = 1\}
+		\] 
+		If $m \geq n+2$ then $S$ must have two disjoint subsets
+		$S_1$ and $S_2$ whose convex hulls intersect.
+	\end{theorem}
+\end{note}
+\end{document}
