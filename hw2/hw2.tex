@@ -50,7 +50,26 @@ The definition of learning in the PAC model requires that hypotheses produced by
 Suppose we consider relaxing this restriction, and let $\Hp$ be the class of all Turing machines (not necessarily polynomial time). Show that if $\C_n$ is the class of all Boolean circuits of size at most $p(n)$ for some fixed polynomial $p(\cdot)$, then $\C$ is efficiently PAC learnable using $\Hp$.
 
 Argue that your solution shows that this relaxation trivializes the model of learning. (Hint: How could you use your solution to trivially learn other concept classes we've seen in class?)
-	
+
+To show that the requirement that the hypotheses produced by a learning algorithm are efficently evaluatable in polynomial time, consider the following scenario: Suppose we have a learning algorithm $\mathcal{L}$ that efficiently PAC learns the concept class $\mathcal{C}_n$ of Boolean circuits with size bounded by $p(n)$:
+
+\textbf{Algorithm $\mathcal{L}$:}
+\begin{itemize}
+	\item \textbf{Input:} A sample $S = \{(x_1, y_1), \ldots, (x_m, y_m)\}$ where each $y_i = c(x_i)$ for some target concept $c \in \mathcal{C}_n$
+	\item \textbf{Output:} A Turing machine $T_S$ that implements a hypothesis $h$
+\end{itemize}
+
+\textbf{Definition of $T_S$:} For any input $x \in \{0,1\}^n$, $T_S$ executes:
+\begin{enumerate}
+	\item Systematically enumerate all Boolean circuits $c' \in \mathcal{C}_n$ in order of increasing circuit size
+	\item For each circuit $c'$, check if $c'(x_i)=y_i$ for all $(x_i, y_i) \in S$
+	\item Return $c'(x)$ for the first circuit $c'$ is found that is consistent with $S$
+\end{enumerate}
+
+\textbf{Proof $\mathcal{L}$ is an Occam Algorithm:} Since the target concept $c \in \mathcal{C}_n$ is consistent with $S$, the algorithm will find at least one consistent circuit (possibly $c$ itself or another circuit that agrees with $c$ on all examples in $S$). Also, the description size of $T_S$ is polynomial in $n$ and $m$. Specifically, the Turing machine $T_S$ can be described in $O(n + \log m)$ bits as it only has to encode the enumeration procedure for circuits (constant-sized code), the sample $S$ (requires at most $O(m \cdot n)$ bits), and the consistency checking logic (constant-sized code). Thus, for some constants $\alpha$ and $\beta$, we have $\text{size}(T_S) \leq (n \cdot \text{size}(c))^\alpha \cdot m^\beta$. Lastly, constructing $T_S$ takes polynomial time since we only need to encode the sample and search procedure. Therefore, $\mathcal{L}$ is an Occam algorithm that efficiently PAC learns $\mathcal{C}_n$ using $\mathcal{H}$ as the hypothesis class.
+
+\textbf{Conclusion:} This approach can be generalized to learn \textit{any} concept class that has a finite representation. For any learnable concept class $\mathcal{D}$, we can define a similar Turing machine that enumerates all concepts in $\mathcal{D}$ and returns the first one consistent with the sample. Despite such a Turing machine having a compact description making the training process efficient, evaluating it on new examples would be computationally expensive. The Turing machine could have to do an exhaustive search through an exponentially large search space of possible concepts before producing an output. Thus, without the efficiently evaluatable constraint, we could trivially learn any concept class by outputting a hypothesis that performs a brute-force search through the concept space-a strategy that doesn't reflect the true nature of learning.
+
 \end{problem}
 \begin{problem} [15pts] \textbf{Infinite Mistake-Bounded Model.}
 	The \textit{Infinite Mistake-Bounded (IMB) model} is a Boolean on-line learning model where the number
