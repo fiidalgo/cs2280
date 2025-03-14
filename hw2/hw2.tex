@@ -82,6 +82,8 @@ monotone disjunction of $k$ literals, if every example presented to the learner 
 attributes.
 
 \textit{Note: Assume for full credit that the learner does \textit{not} know the value of $n$ in advance. For partial credit, you can use the value of $n$ in your algorithm}
+
+COME BACK TO THIS PROBLEM
 \end{problem}
 
 \begin{problem} [15 points] \textbf{Function Classes: Linear Thresholds, DNFs, and Decision Lists.} \
@@ -91,6 +93,8 @@ attributes.
 		poly$(n)$-term DNF are incomparable in that neither class is contained in the
 		other.
 	\end{enumerate}
+
+COME BACK TO THIS PROBLEM
 \end{problem}
 \begin{problem}[15 points] \textbf{Perceptrons Can Make Exponentially Many Mistakes.}\
 	\begin{enumerate}[label = \alph*)]
@@ -103,6 +107,62 @@ attributes.
 		linearly separable but for which the margin is exponentially small in $n$.
 		\item Give an example of a linear threshold function on which the Perceptron algorithm can make exponentially many mistakes.
 	\end{enumerate}
+
+\textbf{Part (a):} The goal is to create $O(n)$ points in $\{0,1\}^n$ where the points can be correctly classified by a linear separator and the optimal separator has an exponentially small margin. We will do this by constructing a set of $2n$ examples in $\{0,1\}^n$ , the first of which is defined as:
+
+\textbf{Set 1:} For each $i \in \{1, 2, \ldots, n\}$, define point $p_i$ as:
+\begin{align}
+p_i[j] = 
+\begin{cases}
+1 & \text{if } j = i \\
+0 & \text{otherwise}
+\end{cases}
+\end{align}
+
+These are standard basis vectors! We label them as follows:
+\begin{align}
+	f(p_i) = 
+	\begin{cases}
+	1 & \text{if } i \text{ is odd} \\
+	0 & \text{if } i \text{ is even}
+	\end{cases}
+	\end{align}
+
+
+The second set is defined as:
+
+\textbf{Set 2:} For each $i \in \{1, 2, \ldots, n\}$, define point $q_i$ as:
+\begin{align}
+q_i[j] = 
+\begin{cases}
+1 & \text{if } j = i \text{ or } j = i+1 \text{ (with } j \leq n\text{)} \\
+0 & \text{otherwise}
+\end{cases}
+\end{align}
+
+For these points, we label them as:
+\begin{align}
+	f(q_i) = 
+	\begin{cases}
+	1 & \text{if } i \text{ is odd} \\
+	0 & \text{if } i \text{ is even}
+	\end{cases}
+	\end{align}
+
+\textbf{Linear Separability:} Consider the weight vector $w \in \mathbb{R}^n$ defined as:
+\begin{align}
+	w[i] = 
+	\begin{cases}
+	2^{-(n-i)} & \text{if } i \text{ is odd} \\
+	-2^{-(n-i+1)} & \text{if } i \text{ is even}
+	\end{cases}
+	\end{align}
+
+With this weight vector and $\theta=0$, it can be verified that all examples in both sets are correctly classified.
+
+\textbf{Margin:} To analyze the margin, we need to normalize the weight vector to have unit $L_2$ norm. The normalized weigh vector $\hat{w} = \frac{w}{\|w\|_2}$ will have its smallest component be approximately $\hat{w}[1] \approx \Theta(2^{-(n-1)})$. For the point $p_1$, the margin after normalization is $|\hat{w} \cdot p_1 - 0| = |\hat{w}[1]| = \Theta(2^{-(n-1)})$. Therefore, the margin $\delta$ is exponentially small in $n$: $\delta = \Theta(2^{-n})$.
+
+\textbf{Part (b):} answer
 \end{problem}
 
 \begin{problem} [10pts] \textbf{Logarithmic Mistake Bounds.} \quad
@@ -112,6 +172,8 @@ attributes.
 		need not be computationally efficient.
 		\item Show a concept class $\C$ for which there exists an algorithm with a mistake bound that is asymptotically better than $\log_2|\C_n|$.
 	\end{enumerate}
+
+MY ANSWER
 \end{problem}
 
 \begin{problem}[15 points] \textbf{Robust Winnow Algorithm.}
@@ -125,6 +187,8 @@ Assume that the algorithm sees $s$ false negative examples and $t$ false positiv
 	not work in the above setting and show that if instead you set $w_i \leftarrow
 	w_i/2$, you will get the required bounds.
 \end{note}
+
+MY ANSWER
 
 
 \begin{problem} [15pts] \textbf{VC Dimension of Linear Halfspaces.}
@@ -143,4 +207,6 @@ Assume that the algorithm sees $s$ false negative examples and $t$ false positiv
 		$S_1$ and $S_2$ whose convex hulls intersect.
 	\end{theorem}
 \end{note}
+
+MY ANSWER
 \end{document}
