@@ -163,7 +163,15 @@ Assume that the algorithm sees $s$ false negative examples and $t$ false positiv
 	w_i/2$, you will get the required bounds.
 \end{note}
 
-MY ANSWER
+In the standard Winnow algorithm, when a false positive occurs, the weights of active variables are set to $0$ ($w_i = 0$ if $x_i = 1$). While this works well in noise-free environments, it's problematic with adversarial noise because a single false positive example would cause the algorithm to make no mistake but incorrectly demote weights, or worse, a false negative example would cause the algorithm to set the weights of relevant variables to $0$. Once a relevant variable's weight is set to $0$, it remains $0$ forever essentially removing that variable from consideration. With adversarial noise, this could permanently eliminate relevant variables from the hypothesis, making it impossible to learn the target concept. Instead, I'll use a modified version where during demotion, weights are halved rather than zeroed.
+\begin{itemize}
+	\item Initialize all weights $w_i = 1$
+	\item Predict $1$ if $\sum_{i=1}^{n} w_i x_i \geq \theta$ where $\theta$ is the threshold
+	\item If false negative, i.e., predict 0 when true label is 1, then $w_i \rightarrow 2w_i$ for all $i$  where $x_i=1$
+	\item If false positive, i.e., predict 1 when true label is 0, then $w_i \rightarrow w_i/2$ for all $i$ where $x_i=1$
+\end{itemize}
+
+Mistakes on correctly labeled examples (normal learning) is one source of mistakes. In this case, each relevant variable can be promoted at most $\log n$ times since weights start at 1. As there are $k$ relevant variables in the disjunction, this results in at most $k \log n$ mistakes from normal learning. In false negative examples, weights of relevant variables can be incorrectly halved. When this happens, it might require a promotion to become relevant again. In the worst case, all $k$ relevant variables might need to be promoted again, so for each of the $s$ false negative examples, there's a potential amplification of $k$ mistakes, resulting in at most $k \cdot s$ additional mistakes. For false positives, the weights of irrelevant variables are mistakenly increased. Each such example can lead to at most one additional mistake when the algorithm encounters a correctly labeled negative example, so with $t$ false positive examples, we get at most $t$ additional mistakes. So altogether, we get $O(k \log n + ks + t)$ mistakes.
 
 
 \begin{problem} [15pts] \textbf{VC Dimension of Linear Halfspaces.}
