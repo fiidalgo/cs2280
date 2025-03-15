@@ -83,7 +83,23 @@ attributes.
 
 \textit{Note: Assume for full credit that the learner does \textit{not} know the value of $n$ in advance. For partial credit, you can use the value of $n$ in your algorithm}
 
-COME BACK TO THIS PROBLEM
+\textbf{Algorithm $\mathcal{L}$:}
+\begin{itemize}
+	\item Initialize $S = \emptyset$ (set of observed attributes)
+	\item For each attribute $i \in S$, initialize weight $w_i = 1$
+	\item Initialize threshold $\theta = 1$
+	\item For each example $x$: \begin{itemize}
+		\item If any new attributes appear in $x$, add them to $S$ and initialize their weights to 1
+		\item Compute the sum of weights: $\text{sum} = \sum_{i \in x} w_i$
+		\item Predict 1 if $\text{sum} \geq \theta$ and 0 otherwise
+		\item If prediction is incorrect: \begin{itemize}
+			\item If false negative (predict 0, true label of 1), then for each attribute $i \in x$ set $w_i = 2 \cdot w_i$
+			\item If false positive (predict 1, true label of 0), then for each attribute $i \in x$ set $w_i = w_i/2$
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+Let $R$ be the set of $k$ relevant attributes in the target disjunction. In cases of false negatives, at least one of the relevant attributes must be present in the example. Each time a flase negative occurs, the weights of all attributes in the example (including at least one relevant attribute) are doubled. For any reelvant attribute $r \in R$, its weight can only doubled at most $\log n$ times before exceeding $n$ because the weight starts at 1, so after $\log n$ doublings, the weight becomes $2^{\log n} = n$ and since examples have at most $n$ positive attributes, the sum of weights cannot exceed $n^2$ without triggering a positive prediction. As there are $k$ relevant attributes each of which can be involved in at most $\log n$ false negative mistakes, the total contribution of mistakes due to false negatives is upper bounded by $k \log n$. For false positives, none of the relevant attributes are present, so for a false positive to occur, the sum of the weights of irrelevant attributes in the example must exceed the threshold. After each false positive mistake, the total weight of irrelevant attributes decreases by at least a factor of 2, so given that the maximum total weight is bounded (since each example has at most $n$ attributes), and the minimum possible weight of an attribute is arbitrarily small but positive, the number of false positive mistakes is also bounded by $O(k \log n)$. Therefore, the total mistake bound is $O(k \log n + k \log n) = O(k \log n)$. As we only maintain weights for attributes we've observed, we don't need to know $n$ in advance for this algorithm to work.
 \end{problem}
 
 \begin{problem} [15 points] \textbf{Function Classes: Linear Thresholds, DNFs, and Decision Lists.} \
