@@ -108,61 +108,23 @@ COME BACK TO THIS PROBLEM
 		\item Give an example of a linear threshold function on which the Perceptron algorithm can make exponentially many mistakes.
 	\end{enumerate}
 
-\textbf{Part (a):} The goal is to create $O(n)$ points in $\{0,1\}^n$ where the points can be correctly classified by a linear separator and the optimal separator has an exponentially small margin. We will do this by constructing a set of $2n$ examples in $\{0,1\}^n$ , the first of which is defined as:
-
-\textbf{Set 1:} For each $i \in \{1, 2, \ldots, n\}$, define point $p_i$ as:
+\textbf{Part (a):} To find examples that are linearly separable but have exponentially small margin, I'll create two classes of points in $\{0,1\}^n$. The classification rule $f$ will be such that a point $x \in \{0,1\}^n$ has $f(x)=1$ if and only if the first non-zero element appears at an odd-index position. The first class of points we'll call $\{a_1, a_2, \ldots, a_n\}$ where $a_i$ has its first $i-1$ components as $0$ and all remaining components as $1$. Mathematically this can be described as:
 \begin{align}
-p_i[j] = 
-\begin{cases}
-1 & \text{if } j = i \\
-0 & \text{otherwise}
-\end{cases}
+	a_1 &= (1,1,\ldots,1) \\
+	a_2 &= (0,1,1,\ldots,1) \\
+	&\vdots \\
+	a_n &= (0,0,\ldots,0,1)
 \end{align}
-
-These are standard basis vectors! We label them as follows:
+The second class of points will be $\{b_1, b_2, \ldots, b_n\}$ where $b_i$ has its first $i-1$ components as $0$ followed by alternating $0$'s and $1$'s. Mathematically this can be described as:
 \begin{align}
-	f(p_i) = 
-	\begin{cases}
-	1 & \text{if } i \text{ is odd} \\
-	0 & \text{if } i \text{ is even}
-	\end{cases}
-	\end{align}
-
-
-The second set is defined as:
-
-\textbf{Set 2:} For each $i \in \{1, 2, \ldots, n\}$, define point $q_i$ as:
-\begin{align}
-q_i[j] = 
-\begin{cases}
-1 & \text{if } j = i \text{ or } j = i+1 \text{ (with } j \leq n\text{)} \\
-0 & \text{otherwise}
-\end{cases}
+	b_1 &= (1,0,1,0,\ldots) \\
+	b_2 &= (0,1,0,1,\ldots) \\
+	&\vdots \\
+	b_n &= (0,0,\ldots,0,1)
 \end{align}
+According to our classification rule, points $a_i$ and $b_i$ are labeled $1$ when $i$ is odd and $0$ when $i$ is even. To correctly classify these points, any weight vector $w$ must have $w_i > 0$ when $i$ is odd and $w_i < 0$ when $i$ is even. And specifically for the $b_i$ points, the magnitude of $w_i$ must dominate the sum of all subsequent weights: $|w_i| > \sum_{j>1} |w_j|$. These constraints on $w$ force it to decay exponentially. A valid weight vector would be $w = (2^{-1}, 2^{-2}, 2^{-3}, \ldots)$. Then, after normalizing the vector to unit length, the margin becomes $\delta = O(2^{-n})$ which is exponentially small in $n$.
 
-For these points, we label them as:
-\begin{align}
-	f(q_i) = 
-	\begin{cases}
-	1 & \text{if } i \text{ is odd} \\
-	0 & \text{if } i \text{ is even}
-	\end{cases}
-	\end{align}
-
-\textbf{Linear Separability:} Consider the weight vector $w \in \mathbb{R}^n$ defined as:
-\begin{align}
-	w[i] = 
-	\begin{cases}
-	2^{-(n-i)} & \text{if } i \text{ is odd} \\
-	-2^{-(n-i+1)} & \text{if } i \text{ is even}
-	\end{cases}
-	\end{align}
-
-With this weight vector and $\theta=0$, it can be verified that all examples in both sets are correctly classified.
-
-\textbf{Margin:} To analyze the margin, we need to normalize the weight vector to have unit $L_2$ norm. The normalized weigh vector $\hat{w} = \frac{w}{\|w\|_2}$ will have its smallest component be approximately $\hat{w}[1] \approx \Theta(2^{-(n-1)})$. For the point $p_1$, the margin after normalization is $|\hat{w} \cdot p_1 - 0| = |\hat{w}[1]| = \Theta(2^{-(n-1)})$. Therefore, the margin $\delta$ is exponentially small in $n$: $\delta = \Theta(2^{-n})$.
-
-\textbf{Part (b):} answer
+\textbf{Part (b):} The Perceptron algorithm's mistake bound is inversely proportional to the square of the margin. Consider the weight vector $w = \left(1, -\frac{1}{2}, \frac{1}{4}, -\frac{1}{8}, \ldots, \frac{(-1)^{n-1}}{2^{n-1}}, 0\right)$. When normalized to unit length, this defines a linear threshold function $f(x) = 1$ if $w \cdot x \geq \theta$ and $f(x) = 0$ otherwise, where $\theta = 0$. For this function, the weights alternate signs and decrease exponentially in magnitude. The margin $\delta_w = \min_{x \in X} |w \cdot x|$ is less than $2^{-n}$, and the squared norm $\|w\|_2 = \sum_i w_i^2$ converges to a constant. By the Perceptron mistake bound theorem, the number of mistakes is bounded by $\frac{\|w\|^2}{\delta_2^2}$ which is at least $2^{2n}$ for this weight vector. Thus, the Perceptron algorithm can make exponentially many mistakes on this linear threshold function.
 \end{problem}
 
 \begin{problem} [10pts] \textbf{Logarithmic Mistake Bounds.} \quad
@@ -173,7 +135,7 @@ With this weight vector and $\theta=0$, it can be verified that all examples in 
 		\item Show a concept class $\C$ for which there exists an algorithm with a mistake bound that is asymptotically better than $\log_2|\C_n|$.
 	\end{enumerate}
 
-MY ANSWER
+
 \end{problem}
 
 \begin{problem}[15 points] \textbf{Robust Winnow Algorithm.}
