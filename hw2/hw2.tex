@@ -110,7 +110,114 @@ Let $R$ be the set of $k$ relevant attributes in the target disjunction. In case
 		other.
 	\end{enumerate}
 
-COME BACK TO THIS PROBLEM
+\textbf{Part (a):} Define $z_j$ for $j=1,2,\dots,k$ as:
+\begin{align}
+	z_j = 
+	\begin{cases}
+	x_{i_j} & \text{if } b_j = 1 \\
+	1 - x_{i_j} & \text{if } b_j = 0
+	\end{cases}
+	\end{align}
+
+This transformation allows the decision list to be rewritten as:
+\begin{align}
+	&\text{if } z_1 = 1 \text{ then output } c_1 \text{ else} \\
+	&\text{if } z_2 = 1 \text{ then output } c_2 \text{ else} \\
+	&\vdots \\
+	&\text{if } z_k = 1 \text{ then output } c_k \text{ else} \\
+	&\text{output } c_{k+1}
+	\end{align}
+
+Let $M=2^k$ and define the weights as:
+\begin{align}
+	w_j = 
+	\begin{cases}
+	M \cdot 2^{k-j} & \text{if } c_j = 1 \\
+	-M \cdot 2^{k-j} & \text{if } c_j = 0
+	\end{cases}
+	\end{align}
+
+For the threshold, set: 
+\begin{align}
+	\theta = 
+	\begin{cases}
+	-\frac{1}{2} & \text{if } c_{k+1} = 1 \\
+	\frac{1}{2} & \text{if } c_{k+1} = 0
+	\end{cases}
+	\end{align}
+
+Substituting $z_j$, you get a standard linear threshold function on the original variable $x_i$:
+\begin{align}
+	\sum_{j=1}^k w_j z_j &= \sum_{j=1, b_j=1}^k w_j x_{i_j} + \sum_{j=1, b_j=0}^k w_j (1-x_{i_j}) \\
+	&= \sum_{j=1, b_j=1}^k w_j x_{i_j} + \sum_{j=1, b_j=0}^k w_j - \sum_{j=1, b_j=0}^k w_j x_{i_j} \\
+	&= \sum_{i=1}^n v_i x_i + v_0
+	\end{align}
+
+where: 
+\begin{align}
+	v_i &= \sum_{j: i_j=i, b_j=1} w_j - \sum_{j: i_j=i, b_j=0} w_j \\
+	v_0 &= \sum_{j: b_j=0} w_j
+	\end{align}
+
+Thus, the final linear threshold function is $\1[v \cdot x + v_0 \geq \theta]$, or, $\1[v \cdot x \geq \theta - v_0]$.
+
+\textbf{Part (b):} To prove that the class of linear threshold functions and the class of poly$(n)$-term DNF are incomparable in that neither class is contained in the other, I need to first show that there exists a linear threshold function that cannot be expressed as a poly$(n)$-term DNF, and then show that there exists a poly$(n)$-term DNF that cannot be expressed as a linear threshold function.
+
+\textbf{Part 1:} A linear threshold function not representable as a poly$(n)$-term DNF.
+
+Consider the Majority function $\text{Majority}_n(x)$ that outputs 1 if and only if at least $\frac{n}{2}$ variables are 1:
+\begin{align}
+\text{Majority}_n(x) = \1\left[\sum_{i=1}^n x_i \geq \frac{n}{2}\right]
+\end{align}
+
+This is clearly a linear threshold function with $w_i = 1$ for all $i$ and $\theta = \frac{n}{2}$.
+
+To represent this as a DNF, we need a term for each possible way to set at least $\frac{n}{2}$ variables to 1. The number of such terms is:
+\begin{align}
+\sum_{i=n/2}^n \binom{n}{i}
+\end{align}
+
+For large $n$, this sum is dominated by the binomial coefficient $\binom{n}{n/2}$, which is approximately $\frac{2^n}{\sqrt{\pi n/2}}$ by Stirling's approximation. This grows faster than any polynomial in $n$.
+
+Therefore, the Majority function cannot be represented by a poly$(n)$-term DNF.
+
+\textbf{Part 2:} A poly$(n)$-term DNF not representable as a linear threshold function.
+
+Consider the Parity function on 3 variables:
+\begin{align}
+\text{Parity}_3(x_1, x_2, x_3) = x_1 \oplus x_2 \oplus x_3
+\end{align}
+
+This can be expressed as a DNF with 4 terms:
+\begin{align}
+\text{Parity}_3(x_1, x_2, x_3) = (x_1 \land \lnot x_2 \land \lnot x_3) \lor (\lnot x_1 \land x_2 \land \lnot x_3) \lor (\lnot x_1 \land \lnot x_2 \land x_3) \lor (x_1 \land x_2 \land x_3)
+\end{align}
+
+To prove this cannot be represented as a linear threshold function, assume by contradiction that there exist weights $w_1, w_2, w_3$ and threshold $\theta$ such that:
+\begin{align}
+\text{Parity}_3(x_1, x_2, x_3) = \1[w_1 x_1 + w_2 x_2 + w_3 x_3 \geq \theta]
+\end{align}
+
+From the truth table of Parity$_3$, we have:
+\begin{align}
+&w_1 \cdot 1 + w_2 \cdot 0 + w_3 \cdot 0 \geq \theta \quad \text{(since Parity}_3(1,0,0) = 1\text{)} \\
+&w_1 \cdot 0 + w_2 \cdot 1 + w_3 \cdot 0 \geq \theta \quad \text{(since Parity}_3(0,1,0) = 1\text{)} \\
+&w_1 \cdot 0 + w_2 \cdot 0 + w_3 \cdot 1 \geq \theta \quad \text{(since Parity}_3(0,0,1) = 1\text{)} \\
+&w_1 \cdot 1 + w_2 \cdot 1 + w_3 \cdot 1 \geq \theta \quad \text{(since Parity}_3(1,1,1) = 1\text{)} \\
+&w_1 \cdot 0 + w_2 \cdot 0 + w_3 \cdot 0 < \theta \quad \text{(since Parity}_3(0,0,0) = 0\text{)} \\
+&w_1 \cdot 1 + w_2 \cdot 1 + w_3 \cdot 0 < \theta \quad \text{(since Parity}_3(1,1,0) = 0\text{)} \\
+&w_1 \cdot 1 + w_2 \cdot 0 + w_3 \cdot 1 < \theta \quad \text{(since Parity}_3(1,0,1) = 0\text{)} \\
+&w_1 \cdot 0 + w_2 \cdot 1 + w_3 \cdot 1 < \theta \quad \text{(since Parity}_3(0,1,1) = 0\text{)}
+\end{align}
+
+From the first three inequalities, we have $w_1 \geq \theta$, $w_2 \geq \theta$, and $w_3 \geq \theta$.
+But from the sixth inequality, we have $w_1 + w_2 < \theta$.
+
+This creates a contradiction since $w_1 + w_2 \geq \theta + \theta = 2\theta > \theta$.
+
+Therefore, Parity$_3$ cannot be represented as a linear threshold function, despite having a small DNF representation with only 4 terms.
+
+Since I've shown examples in both directions, it can be concluded that the class of linear threshold functions and the class of poly$(n)$-term DNF are incomparable.
 \end{problem}
 \begin{problem}[15 points] \textbf{Perceptrons Can Make Exponentially Many Mistakes.}\
 	\begin{enumerate}[label = \alph*)]
