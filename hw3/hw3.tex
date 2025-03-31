@@ -45,6 +45,73 @@ such that for any $m$ there exists a set $S$ of $m$ points such that $|\Pi_{\cal
 C}(S)|=\Phi_d(m).$
 \end{problem}
 
+\noindent
+
+\paragraph{Sauer--Shelah Lemma.}
+The Sauer--Shelah Lemma states that for a concept class $\mathcal{C}$ of VC dimension $d$, and any finite set $S$ of $m$ points,
+\[
+\lvert \Pi_{\mathcal{C}}(S)\rvert \;\le\; \Phi_d(m) \;=\; \sum_{i=0}^{d}\binom{m}{i}.
+\]
+We want to exhibit, for each fixed $d$, a concept class whose number of dichotomies exactly matches $\Phi_d(m)$ for every subset $S$ of size $m$. In other words, we seek a class $\mathcal{C}$ of VC dimension $d$ so that
+\[
+\bigl\lvert \Pi_{\mathcal{C}}(S)\bigr\rvert \;=\;\Phi_d(m)\quad\text{for all $m$ and all $S$ with $\lvert S\rvert = m$.}
+\]
+
+\paragraph{Construction of the saturating class.}
+Let $X$ be an infinite domain (or at least sufficiently large). Define
+\[
+\mathcal{C} \;=\; \bigl\{\;c_T \;:\; T\subseteq X,\;\lvert T\rvert \le d\;\bigr\},
+\]
+where each ``concept'' $c_T$ is the indicator function of the finite set $T$, that is,
+\[
+c_T(x) \;=\;
+\begin{cases}
+1, & x\in T,\\
+0, & x\notin T.
+\end{cases}
+\]
+In other words, $\mathcal{C}$ consists of all subsets of $X$ whose size is at most $d$, interpreted as characteristic functions.
+
+\paragraph{Why $\mathcal{C}$ has VC dimension $d$.}
+First observe that no set of size larger than $d$ can be shattered, since each concept in $\mathcal{C}$ picks out at most $d$ points.  Hence
+\[
+\text{VC-dim}(\mathcal{C}) \;\le\; d.
+\]
+On the other hand, any set $S^*$ of size $d$ is shattered by $\mathcal{C}$: for any chosen subset $A\subseteq S^*$ (of any size up to $d$), we can take the concept $c_{A}$ to pick out exactly $A$ from $S^*$.  This shows
+\[
+\text{VC-dim}(\mathcal{C}) \;\ge\; d.
+\]
+Thus $\text{VC-dim}(\mathcal{C})=d$.
+
+\paragraph{Why $\lvert \Pi_{\mathcal{C}}(S)\rvert = \Phi_d(\lvert S\rvert)$.}
+Take any set $S\subseteq X$ of size $m$.  Then
+\[
+\Pi_{\mathcal{C}}(S)
+\;=\;
+\{\, c_T\!\restriction_{S}\;\mid\; T\in \mathcal{C}\}
+\;=\;
+\{\,T\cap S\;\mid\; |T|\le d\}.
+\]
+But $T\cap S$ is any subset of $S$ of size at most $d$.  Hence
+\[
+\bigl\lvert \Pi_{\mathcal{C}}(S)\bigr\rvert
+\;=\;
+\sum_{i=0}^d \binom{m}{i}
+\;=\;
+\Phi_d(m),
+\]
+exactly saturating the Sauer--Shelah bound for all $m$.  Therefore, for every set $S$ of $m$ points,
+\[
+\bigl\lvert \Pi_{\mathcal{C}}(S)\bigr\rvert
+\;=\;
+\Phi_d(m),
+\]
+as desired.
+
+\paragraph{Conclusion.}
+This family of ``indicator-of-$T$'' concepts thus has VC dimension $d$ and achieves the maximum possible number of dichotomies $\Phi_d(m)$ on every $m$-element subset $S$, thereby saturating the bound stated in the problem.
+
+
 
 \begin{problem} (10pt) \textbf{Monotone Boolean functions are not PAC-learnable.} Let $x = x_1\dots x_n \in \{0,1\}^n$ and $y = y_1\dots y_n \in
 \{0,1\}^n$ be two $n$-bit strings.  We say that $x \geq y$ if $x_i \geq y_i$ for
@@ -55,6 +122,8 @@ $\{0,1\}^n.$  Prove that there is no PAC learning algorithm for $M_n$ whose
 running time is a polynomial function of $n, \frac{1}{\epsilon}, \frac{1}{\delta}$ (without
 size$(c)$).
 \end{problem}
+
+
 
 
 
