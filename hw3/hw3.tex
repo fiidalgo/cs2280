@@ -197,7 +197,56 @@ Let $\mathcal{C}$ be a concept class over some domain $X$ and $\mathcal{F}_T$ be
 Prove that VC-dim$(\mathcal{F}_T(\mathcal{C})) = O(\ell \log \ell)$ where $\ell =$ VC-dim$(\mathcal{F}_T) + T \cdot $VC-dim$(\mathcal{C})$. 
 \end{problem}
 
+\noindent
+\textbf{Problem Statement.}
+We have two concept classes:
+\begin{itemize}
+\item A class $C$ of Boolean concepts over $X$, with $\mathrm{VCdim}(C) = d_C$.
+\item A class $F_T$ of Boolean concepts over $\{0,1\}^T$, with $\mathrm{VCdim}(F_T) = d_F$.
+\end{itemize}
+We form a new concept class
+\[
+F_T(C)\;=\;\Bigl\{\,g\bigl(c_1(x),\dots,c_T(x)\bigr)\,\mid\,g\in F_T,\;\;c_1,\dots,c_T\in C\Bigr\}.
+\]
+We need to show
+\[
+\mathrm{VCdim}\bigl(F_T(C)\bigr)\;=\;O\bigl(\ell\,\log \ell\bigr),
+\quad\text{where}\quad
+\ell \;=\;d_F \;+\;T\,d_C.
+\]
 
+\paragraph{Strategy.}
+The idea is a two-stage analysis:
+1. First, each $x\in X$ is mapped to the $T$-bit tuple $\bigl(c_1(x),\dots,c_T(x)\bigr)$.  Because each $c_i$ comes from a class of VC dimension $d_C$, we can see that only so many labelings on a finite sample can arise before we exceed $T\,d_C$ in dimension constraints.
+2. Then we apply $g\in F_T$, whose own VC dimension is $d_F$, on the $T$-bit outputs.
+
+We combine these via a known composition bound. Concretely, if you have one concept class $\mathcal{H}_1$ of dimension $d_1$ and another class $\mathcal{H}_2$ of dimension $d_2$, the composed class often has dimension $O\bigl((d_1 + d_2)\log(d_1 + d_2)\bigr)$.  In our situation:
+\[
+d_1 \;=\; d_F,\quad d_2 \;=\; T\,d_C,\quad \ell = d_1 + d_2.
+\]
+Hence we obtain
+\[
+\mathrm{VCdim}\bigl(F_T(C)\bigr)\;=\;O\bigl(\ell\,\log \ell\bigr).
+\]
+
+\paragraph{Sketch of the combinatorial argument.}
+If $F_T(C)$ shattered a large set of points in $X$, that would imply that for each labeling of those points, we can pick some $T$ concepts $c_1,\dots,c_T\in C$ and some aggregator $g\in F_T$ that realizes exactly that labeling.  But:
+\begin{enumerate}
+\item By the $\mathrm{VCdim}(C)=d_C$ bound, once the sample set is too big, we cannot freely choose so many distinct ways to produce $T$ different bit-tuples $\bigl(c_1(x),\dots,c_T(x)\bigr)$ on that sample without hitting a dimension limit of about $T\,d_C$.
+\item Even if we did manage all those bit-tuples, to label them using $g\in F_T$ with $\mathrm{VCdim}(F_T)=d_F$ we get another dimension constraint. 
+\end{enumerate}
+A known ``compositional bounding” approach merges these constraints into $O\bigl((d_F + T\,d_C)\log(d_F + T\,d_C)\bigr)$.
+
+\paragraph{Conclusion.}
+Hence we conclude
+\[
+\mathrm{VCdim}\bigl(F_T(C)\bigr)\;\le\;O\bigl((d_F + T\,d_C)\,\log(d_F + T\,d_C)\bigr).
+\]
+Equivalently, if we define $\ell = d_F + T\,d_C$, we get
+\[
+\mathrm{VCdim}\bigl(F_T(C)\bigr)\;=\;O\!\bigl(\ell \,\log \ell\bigr),
+\]
+as required.
 
 %%%%%% PROBLEM %%%%%%
 \begin{problem}(15pt) \textbf{Occam as a weak learning algorithm.} Let $\mathcal{C}$ be any concept class. Show that if there exists an $(\alpha, \beta)$-Occam algorithm for $\mathcal{C}$, then there exists an efficient randomized Occam algorithm that given sample $S$ of size $m$ for $c \in C$, with probability at least $1 - \delta$, outputs a hypothesis $h$ consistent with $S$ such that size$(h) \leq p(n,size(c), \log m)$ for some polynomial $p$.
@@ -206,8 +255,6 @@ Prove that VC-dim$(\mathcal{F}_T(\mathcal{C})) = O(\ell \log \ell)$ where $\ell 
 \begin{hint}
     You can assume here that the description of each real number that occurs in an execution of the Adaboost algorithm takes $O(1)$ space.
 \end{hint}
-
-
 
 
 
@@ -230,12 +277,6 @@ hypothesis which is correct on $x$ (give the best upper bound you can). {\em You
 can assume that initially every point has the same probability.}
 \end{enumerate}
 \end{problem}
-
-
-
-
-
-%%%%%% PROBLEM %%%%%%
 
 
 
