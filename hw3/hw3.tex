@@ -123,9 +123,36 @@ running time is a polynomial function of $n, \frac{1}{\epsilon}, \frac{1}{\delta
 size$(c)$).
 \end{problem}
 
+\noindent
+\textbf{Problem Statement.}
+Let $M_n$ be the class of all monotone Boolean functions on $n$ variables, that is, all $f:\{0,1\}^n \to \{0,1\}$ satisfying
+\[
+x \ge y \quad\Longrightarrow\quad f(x)\;\ge\;f(y)\quad \text{for all}\,x,y\in\{0,1\}^n.
+\]
+We want to show that \emph{no} polynomial-time PAC learning algorithm can learn $M_n$ \emph{unless} it is allowed to depend on the size of the target concept.  In other words, there is no algorithm that runs in time
+\[
+\text{poly}\bigl(n,\;1/\varepsilon,\;1/\delta\bigr)
+\]
+that PAC learns \emph{all} monotone functions of $n$ variables (when the algorithm’s runtime is not permitted to depend on $\text{size}(c)$).
 
+\paragraph{Key idea: 3-Term DNF is a small subfamily of monotone Boolean functions.}
+\begin{itemize}
+	\item 3-Term DNF formulas are already hard to PAC learn, in the sense that learning 3-Term DNF by 3-Term DNF is NP-hard.
+	\item Every 3-Term DNF formula is monotone because it has no negated variables.
+\end{itemize}
 
+Hence the class of 3-Term DNF embeds into $M_n$:  every 3-Term DNF is in fact a monotone Boolean function on $n$ variables.
 
+\paragraph{Hardness argument.}
+Suppose, for contradiction, that there were a PAC learner $\mathcal{A}$ that learns $M_n$ in time $\text{poly}(n,1/\varepsilon,1/\delta)$ with no dependence on $\text{size}(c)$.  Then:
+\begin{enumerate}
+	\item Given any target concept $c$ that is specifically a 3-Term DNF (hence monotone), we can feed $\mathcal{A}$ those labeled examples.
+	\item Because $3$-Term DNF $\subseteq M_n$, the hypothesized learner $\mathcal{A}$ would succeed (by assumption) in polynomial time in $n,1/\varepsilon,1/\delta$.
+\end{enumerate}
+
+But from standard NP-hardness reductions, learning 3-Term DNF in polynomial time is known to be NP-hard unless RP $=$ NP.  Thus we get a contradiction.
+
+Hence no such polynomial-time learner for the entire class $M_n$ can exist, if the runtime is forbidden from depending on $\text{size}(c)$.  Concretely, the sheer complexity of even small monotone formulas (e.g.\ 3-term DNF) forces a computational hardness result.
 
 \begin{problem} (10pt) \textbf{VC-dimension of parity functions.}
 Define the class of parity functions ${\mathcal P}$ over $X = \{0, 1\}^n$ as
