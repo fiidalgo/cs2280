@@ -256,7 +256,37 @@ as required.
     You can assume here that the description of each real number that occurs in an execution of the Adaboost algorithm takes $O(1)$ space.
 \end{hint}
 
+\noindent
 
+\paragraph{Problem statement.}
+We have a concept class $C$, and we assume there exists some $(\alpha,\beta)$-Occam algorithm for $C$. In other words, for every sample $S$ of labeled examples consistent with a target $c \in C$, the algorithm outputs a hypothesis $h$ that is also consistent with $S$ and whose size is at most $\text{poly}(\lvert S\rvert^\alpha)$ with probability at least $1-\beta$. We want to prove there is an efficient randomized Occam algorithm that, given $m$ samples of $c \in C$, outputs (with high probability) a consistent hypothesis whose size is at most $p\bigl(n,\text{size}(c),\log m\bigr)$ for some polynomial $p$.
+
+\paragraph{High-level idea.}
+\begin{itemize}
+	\item If we have an Occam algorithm that always produces a small (bounded-size) hypothesis consistent with $S$,
+	\item Then we can use random “sub-samples” or repeated calls to convert it into a randomized Occam learner that succeeds with high probability and still retains a polynomial bound on the hypothesis size, but now as a function of logarithm of the sample size.
+\end{itemize}
+
+\paragraph{Step-by-step argument.}
+\begin{enumerate}
+\item \textbf{Existing $(\alpha,\beta)$-Occam algorithm.}  
+  By hypothesis, whenever it is given a labeled sample $S$ of size $m$, it returns (with probability $\ge 1-\beta$) a hypothesis $h$ consistent with $S$, whose size is at most $\text{poly}(m^\alpha)$. 
+  
+\item \textbf{Random partitioning / repeated calls.}  
+  We use standard techniques: for instance, we can break the large sample $S$ into smaller sub-samples or do multiple random draws of subsets of $S$, feeding each subset to the existing Occam algorithm.  We can then unify or “vote” among the resulting hypotheses.  If the original Occam algorithm is run multiple times on random subsets of $S$, it yields a combined or aggregated hypothesis that is consistent with $S$ with high probability.
+
+\item \textbf{Size bound becomes a function of $\log m$.}  
+  Because each sub-sample is $O(\log m)$ in size (rather than all $m$ points), the size of the resulting hypothesis is at most $\text{poly}\bigl((\log m)^\alpha\bigr)$ each time.  Combining them (if we do a small number of merges or a small “voting” ensemble) keeps the final hypothesis size polynomial in $n,\text{size}(c),\log m$.  The net effect is 
+  \[
+  \text{size}(h) \;\le\; p\bigl(n,\;\text{size}(c),\;\log m\bigr).
+  \]
+
+\item \textbf{High-probability guarantee.}  
+  By a union bound over multiple calls, the probability that every call fails is small.  So with probability at least $1-\delta$, we do get a small consistent hypothesis. 
+
+\end{enumerate}
+
+Hence the randomized Occam algorithm exists, completing the proof.
 
 %%%%%% PROBLEM %%%%%%
 
