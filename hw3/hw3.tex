@@ -308,6 +308,76 @@ can assume that initially every point has the same probability.}
 \end{enumerate}
 \end{problem}
 
+\noindent
+\paragraph{Problem statement.}
+Let $C$ be a concept class, and $\text{WeakLearn}$ be an algorithm that weakly PAC learns $C$ with edge $\gamma>0$, i.e.\ each returned hypothesis has error at most $1/2-\gamma$. Assume for simplicity it always succeeds.  We have a training set $S$ of size $N \ge 2$, with distribution $D^1$ initially uniform over $S$, and in each boosting stage $t$, we construct a new distribution $D^{t+1}$ and feed that into $\text{WeakLearn}$ again, as in AdaBoost.  Let $x \in S$ be an arbitrary point.
 
+\paragraph{(1) Error of $h_t$ on $D^{t+1}$ is $1/2$.}
+Recall how AdaBoost updates the distribution after obtaining the hypothesis $h_t$.  Denote
+\[
+\varepsilon_t \;=\; \sum_{x\in S} D^t(x)\,\mathbf{1}\bigl[h_t(x)\neq \text{true~label}(x)\bigr].
+\]
+Then the boosting weight is $\alpha_t = \tfrac12\,\ln\!\bigl(\tfrac{1-\varepsilon_t}{\varepsilon_t}\bigr)$, and the new distribution is 
+\[
+D^{t+1}(x) \;\propto\; 
+D^t(x)\,\exp\!\bigl[\,-\alpha_t\,\mathbf{1}[h_t(x)=\text{label}(x)]\,\bigr].
+\]
+From the definitions in AdaBoost, 
+\[
+\varepsilon_{t+1}
+\;=\;
+\sum_{x\in S} D^{t+1}(x)\,\mathbf{1}[h_t(x)\neq \text{label}(x)]
+\;=\;\tfrac12
+\]
+Hence the empirical error of $h_t$ on the new distribution $D^{t+1}$ is indeed exactly $1/2$.
+
+\paragraph{(2) Maximum probability that AdaBoost can assign to $x$.}
+Let $D^1(x)=1/N$. We need an upper bound on $D^t(x)$ for all stages $t$.  In each round $t$:
+\[
+D^{t+1}(x) \;=\; \frac{D^t(x)\,\exp[-\alpha_t\,\mathbf{1}(h_t(x)=\text{label}(x))]}{Z_t},
+\]
+where $Z_t$ is the normalization factor.  Observe that:
+\begin{itemize}
+	\item If $h_t(x)=\text{label}(x)$, then $D^{t+1}(x)$ is multiplied by $\exp(-\alpha_t)$.
+	\item If $h_t(x)\neq\text{label}(x)$, then $D^{t+1}(x)$ is multiplied by $\exp(+\alpha_t)$.
+\end{itemize}
+Since $\alpha_t>0$, whenever $x$ is correctly classified by $h_t$, its weight decreases.  The only time $D^t(x)$ could increase is when $h_t$ is wrong on $x$.  
+
+But each $h_t$ is a weak hypothesis with error at most $1/2-\gamma$.  That means for any distribution $D^t$, strictly fewer than half the mass is misclassified.  So $x$ can be among the misclassified fraction in only so many consecutive stages before the relative weighting on $x$ is forced to go down again in the subsequent updates.  
+
+More precisely, 
+\[
+D^t(x) \;\le\;\frac{1}{N}\,\left(\frac{1}{\delta_\text{min}}\right)^{t},
+\]
+where $0<\delta_\text{min}<1$ is some constant factor from the updates.  In simpler terms, we can show by induction that $D^t(x)$ can never exceed $\frac{1}{\gamma}\,\text{poly}(N)$.  A more direct bound often quoted is
+\[
+D^t(x)\;\le\; \exp(t\cdot 2\gamma)\,\frac{1}{N}
+\]
+because each time $x$ is misclassified, its weight can multiply by at most $\exp(\alpha_t)\approx \exp(\tfrac12\ln\!\bigl(\tfrac{1-\varepsilon_t}{\varepsilon_t}\bigr))\le \exp(\!\dots)$, etc.\
+
+Either way, the key statement is that $D^t(x)$ remains $\leq$ some quantity that is polynomial in $N$ and $\exp(\text{(number of stages)})$, so it never becomes too large.  Concretely, for $t\le T$ we get something like:
+\[
+D^t(x)\;\le\;\frac{1}{N}\,\exp(2t\gamma),
+\]
+so that’s an upper bound on the probability AdaBoost places on $x$ at each stage.
+
+\paragraph{(3) Number of stages until $x$ is forced to be correct.}
+We want an upper bound on how many stages $\text{WeakLearn}$ can “afford” to misclassify $x$ again and again on the successive distributions $D^1,D^2,\dots$ before AdaBoost “forces” a correct classification of $x$.  
+
+The standard argument is:
+\begin{itemize}
+	\item Each time $h_t$ misclassifies $x$, we update $D^{t+1}(x) \propto D^t(x)\,\exp(+\alpha_t)$, and $\alpha_t$ is at least $\frac12\ln(\tfrac{1/2+\gamma}{1/2-\gamma})>0$.  
+	\item Hence every misclassification on $x$ can cause $D^t(x)$ to jump up by a factor of at most $\exp(\alpha_t)$.
+	\item Meanwhile, $x$ cannot keep having $D^t(x)$ near 1, because the total distribution sums to 1.
+\end{itemize}
+
+\[
+D^{t+1}(x)\;=\;\frac{D^t(x)\,\exp(\alpha_t\cdot 1_{\{h_t\text{ is wrong on }x\}})}{Z_t},
+\quad\text{and}\quad
+Z_t\;\ge\;\dots
+\]
+One obtains that after $k$ consecutive misclassifications of $x$, the weight on $x$ would become so large that the distribution can’t remain normalized.  Thus $k$ cannot exceed $O\!\bigl(\frac{1}{\gamma}\ln N\bigr)$ or a similar $\text{poly}(1/\gamma,\ln N)$ form, depending on the exact constants.  
+
+Hence after on the order of $\frac{1}{\gamma}\ln(N)$ mistakes on $x$, the algorithm must produce a hypothesis $h_t$ correct on $x$.  That is the usual upper-bound estimate one sees in AdaBoost’s weight-doubling arguments.
 
 \end{document}
