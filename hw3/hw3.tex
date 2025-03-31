@@ -161,14 +161,41 @@ $\chi_a(x) = 0$ otherwise, where $a \cdot x = \sum_{i=1}^n a_i x_i$. Prove that 
 
 \end{problem}
 
+\noindent
+\textbf{Problem Statement.}
+Let $P$ be the class of all parity functions on $n$ bits.  For each $a \in \{0,1\}^n$, define the parity function
+\[
+\chi_a(x) \;=\; \begin{cases}
+1, & \text{if }a\cdot x \text{ is odd},\\
+0, & \text{if }a\cdot x \text{ is even},
+\end{cases}
+\quad\text{where}\quad
+a\cdot x \;=\;\sum_{i=1}^n a_i\,x_i\;(\mathrm{mod}\;2).
+\]
+We claim that $\mathrm{VCdim}(P) = n$.
 
+\paragraph{1.~VC-dimension is at least $n$.}
+To show any set $S$ of $n$ points in $\{0,1\}^n$ can be shattered, we choose $S$ to be linearly independent over $\mathrm{GF}(2)$.  (For instance, we can pick $S$ to be the standard basis vectors $e_1,\dots,e_n$ in $\{0,1\}^n$)
+
+Given any labeling $b:S \to \{0,1\}$ (so each point $x\in S$ is assigned label $b(x)$), we must find a parity function $\chi_a$ such that $\chi_a(x)=b(x)$ for all $x\in S$. Over $\mathrm{GF}(2)$, specifying $\chi_a(x)=b(x)$ is requiring $a\cdot x \equiv b(x)\pmod{2}$. Because $S$ is linearly independent, there is exactly one solution $a\in\{0,1\}^n$ to these $|S|=n$ linear equations in $\mathrm{GF}(2)$.
+
+Hence, for every possible labeling $b$, there is exactly one parity function $\chi_a$ that matches $b$ on all of $S$.  Therefore $S$ is shattered by $P$, giving $\mathrm{VCdim}(P)\ge n$.
+
+\paragraph{2.~VC-dimension is at most $n$.}
+Any set of $n+1$ distinct points in $\{0,1\}^n$ cannot be linearly independent in $\mathbb{F}_2^n$, because the rank is at most $n$.  Equivalently, if we attempt to label an $(n+1)$-element set in certain conflicting ways, no single parity function $\chi_a$ can match that labeling.  Hence no subset of size $n+1$ can be shattered.
+
+\paragraph{Conclusion.}
+Combining the two parts yields
+\[
+\mathrm{VCdim}(P) \;=\; n.
+\]
+Thus the class of parity functions on $n$ bits has exactly VC-dimension $n$.
 
 \begin{problem} (10pt) \textbf{Compositional VC Dimension.}
 Let $\mathcal{C}$ be a concept class over some domain $X$ and $\mathcal{F}_T$ be a concept class over $\{0, 1\}^T$. We define a class of functions $\mathcal{F}_T(\mathcal{C})$ over $X$ as follows. 
 \[\mathcal{F}_T(\mathcal{C}) = \{g(c_1(x), c_2(x), . . . , c_T(x)) | g \in \mathcal{F}_T \hspace{0.25cm} \text{\rm and} \hspace{0.25cm} c_1, . . . , c_T \in C\}.\] 
 Prove that VC-dim$(\mathcal{F}_T(\mathcal{C})) = O(\ell \log \ell)$ where $\ell =$ VC-dim$(\mathcal{F}_T) + T \cdot $VC-dim$(\mathcal{C})$. 
 \end{problem}
-
 
 
 
