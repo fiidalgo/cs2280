@@ -1,0 +1,110 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{thmtools}
+\usepackage{bbm}
+
+\declaretheorem{theorem}
+\declaretheorem[style=definition]{problem}
+\declaretheorem[style=remark, numbered=no]{hint}
+\declaretheorem[style=remark, numbered=no]{note}
+
+\newcommand*{\C}{{\mathcal C}}
+\newcommand*{\Hp}{{\mathcal H}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\Z}{\mathbb{Z}}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\1}{\mathbbm{1}}
+\DeclareMathOperator{\Ber}{Ber}
+\DeclareMathOperator{\size}{size}
+\DeclareMathOperator{\VCD}{VCD}
+
+
+
+\begin{document}
+
+\begin{flushright}
+			Leslie G. Valiant \\
+			TFs: Aayush Karan \& Kevin Cong
+\end{flushright}
+
+\begin{center}
+\textbf{CS 228: Computational Learning Theory} \\
+Homework 4 (Take Home Exam) Problems\\ \textbf{Mar. 28th - Apr. 4th}
+\end{center}
+
+\textbf{Policy reminders:} You are strongly encouraged to type your solutions using LATEX. You may \textit{not} discuss this problem set with any one except the course staff. You are not allowed to use any materials except your own class notes, the course textbooks, and any material posted on the class website or handed out in class. Moreover, you are not allowed to query any LLM regarding any part of any problem. This problem set is due on \textbf{April 4}; \textit{no late days are allowed}. For any clarifications or questions, please send an email to the teaching staff. 
+
+
+\rule{\linewidth}{0.4pt}
+
+
+\begin{problem} [10 pts] \textbf{Few Relevant Variables Implies Efficient PAC Learnability.}
+    
+A variable $x_i$ is said to be \textit{relevant} to a boolean function $f$ if there are two truth assignments $A, B$ which differ only in their assignment to $x_i$ but which have $f(A) \neq f(B)$. Let $\mathcal{C}$ be the class of boolean functions over $\{0,1\}^n$ that have at most $\log n$ relevant variables. Give a direct proof (i.e., without reducing to other classes) that $\mathcal{C}$ is PAC-learnable in polynomial time by membership queries. 
+
+
+\end{problem}
+
+
+
+\begin{problem} [15 pts] \textbf{Boolean Threshold Functions Are Not PAC-learnable.} Given any $y \in \{0,1\}^n$ and any integer $k \geq 0$, the boolean threshold function $TH_{k,y}$ is defined as follows: an input $x \in \{0,1\}^n$ is a positive example iff $x \cdot y \geq k$, where $x \cdot y$ denotes the standard real-valued dot product of two $n$-dimensional vectors. Prove that if $\mathsf{NP} \neq \mathsf{RP}$ then the representation class of boolean threshold functions is not PAC learnable by boolean threshold functions.
+
+\textbf{Hint.} Reduce from the Zero-One Integer Programming problem (ZIP) which is known to be $\mathsf{NP}$-complete. An instance of ZIP is a set of $s$ pairs $\langle c_i, b_i \rangle$ and the pair $\langle \bar{a}, B \rangle$, where $c_i \in \{0,1\}^n$, $\bar{a} \in \{0,1\}^n$, $b_i \in \{0,1\}$, and $0 \leq B \leq n$. The problem is to determine whether there exists a vector $\bar{d} \in \{0,1\}^n$ such that $c_i \cdot \bar{d} \leq b_i$ for $1 \leq i \leq s$ and $\bar{a} \cdot \bar{d} \geq B$.
+
+\end{problem}
+
+
+\begin{problem}[15 pts] \textbf{Exact Learning DNFs via Membership Queries.} Prove that the class of $(\log n)$-term DNF is learnable in polynomial time in the exact learning model using membership and equivalence queries.
+
+\textbf{Hint:} Reduce this problem to that of learning a DFA (deterministic finite automaton).
+\end{problem}
+
+
+\begin{problem} (16pt) \textbf{Teaching dimension.} 
+Let $X$ be a finite instance space.  Given a concept class ${\cal C}$ and a
+target concept $c \in {\cal C},$  we say that a sequence $T$ of labelled
+examples is a {\em teaching sequence} for $c$ in ${\cal C}$ if $c$ is the only
+concept in ${\cal C}$ that is consistent with $T$. Let $T(c)$ be the set of all
+teaching sequences for $c$ in ${\cal C}.$  The {\em teaching dimension} of
+concept class ${\cal C}$ is then defined to be
+%
+\[ \mbox{TD}({\cal C}) = \max_{c \in {\cal C}} \min_{T \in T(c)} |T| \] 
+%
+where $|T|$ denotes the number of examples in the sequence $T$.
+\begin{enumerate}
+\item (4pt) Give an example of a concept class ${\cal C}$ for which TD$({\cal C})
+> $ VC-dim$({\cal C}).$
+\item (4pt) Give an example of a concept class ${\cal C}$ for which TD$({\cal C})
+< $ VC-dim$({\cal C}).$
+\item (4pt) Show that for any concept class ${\cal C},$ TD$({\cal C}) \leq |{\cal
+C}|-1.$
+\item (4pt) Show that for any concept class ${\cal C},$ TD$({\cal C}) \leq $
+VC-dim$({\cal C}) + |{\cal C}|- 2^{\mbox{\tiny{VC-dim}} ({\cal C})}$.
+\end{enumerate}
+
+\end{problem}
+
+
+\begin{problem} [15 pts] \textbf{Persistent Classification Noise Model.}
+For learning from noisy examples using membership queries, the random \textit{persistent} classification noise model is as follows: Given concept $c \in \mathcal{C}$ and noise rate $\eta$, a noisy concept $c'$ is produced by flipping the label of $c$ at each point with probability $\eta$. Then a learning algorithm gets all examples and membership queries labeled according to $c'$. This implies that in this model, with certain (albeit negligible) probability, $c'$ might be very far from $c$. For simplicity, we only require that a learning algorithm succeeds with probability at least $1/2$, where the probability of success also depends on the random choice of $c'$, and, as before, the running time can be polynomial in 
+\[
+\frac{1}{1-2\eta}.
+\]
+Let $\mathcal{P}$ be the class of parity functions over $\{0,1\}^n$ and $\mathcal{U}$ be the uniform distribution over $\{0,1\}^n$.
+
+\begin{enumerate}
+    \item[(a)] (5pts) Give an algorithm that learns $\mathcal{P}$ using membership queries in the presence of random persistent classification noise (that is, for any $\eta < 1/2$).
+    \item[(b)] (5pts) Now assume that $c'$ is chosen by an adversary such that 
+    \[
+    \mathbf{Pr}_{\mathcal{U}}[c'(x) \neq c(x)] \leq \eta.
+    \]
+    Give an algorithm that learns $\mathcal{P}$ using membership queries in the presence of such malicious noise of rate $\eta = 1/5$.
+    \item[(c)] (5pts) Prove that $\mathcal{P}$ is not learnable using membership queries with the malicious noise as above of rate $\geq 1/4$.
+\end{enumerate}
+\end{problem}
+\end{document}
