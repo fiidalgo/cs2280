@@ -93,6 +93,19 @@ Consequently, if $\mathcal{A}$ could learn threshold functions, we would run $\m
 \textbf{Hint:} Reduce this problem to that of learning a DFA (deterministic finite automaton).
 \end{problem}
 
+We show how to learn a DNF formula with at most $\log n$ terms by reducing the problem to learning a polynomial-size DFA.
+
+\textbf{Construction of DFA:} Let $c$ be the unknown DNF, consisting of $t \le \log n$ terms $T_1,\dots,T_t$ (each $T_j$ is a conjunction of literals). We construct a DFA $M$ over the alphabet $\{0,1\}$ that reads strings of length $n$ (each $n$-bit string is an input to $c$) and accepts exactly those strings $x$ for which $c(x)=1$. The state of $M$ after reading a prefix of the input will record which of the $t$ terms have not yet been falsified by that prefix. Formally, define the state set 
+\[
+Q = \{ S \subseteq \{1,\ldots,t\} : S \text{ is the set of terms consistent with the prefix read so far}\}.
+\] 
+Initially, $M$ starts in state $S_0 = \{1,\ldots,t\}$ (all terms are alive). The transition function $\delta$ is defined as follows: if the automaton is in state $S \subseteq [t]$ and the next input bit is $b$ in position $i$, then 
+\[
+\delta(S, b) = \{ j \in S : \text{the $i$-th literal of term $T_j$ is consistent with bit $b$}\}.
+\] 
+After reading all $n$ bits, the DFA accepts if and only if $S \neq \emptyset$, i.e., at least one term is satisfied. Since there are at most $\log n$ terms, the number of subsets $S$ is at most $2^{\log n} = n$, so $M$ has at most $n$ states.
+
+\textbf{Learning via Angluin's \texttt{L*} algorithm:} We can simulate the exact learning of $M$ using Angluin's algorithm, which requires membership and equivalence queries. A membership query to $M$ can be answered by querying $c$ directly. An equivalence query for a hypothesized DFA can also be answered by querying $c$ for agreement. Since $M$ has $O(n)$ states, the DFA learning algorithm runs in polynomial time. Once $M$ is learned, it can be converted back into a DNF with at most $\log n$ terms. Thus, $(\log n)$-term DNF is exactly learnable in polynomial time with membership and equivalence queries.
 
 \begin{problem} (16pt) \textbf{Teaching dimension.} 
 Let $X$ be a finite instance space.  Given a concept class ${\cal C}$ and a
