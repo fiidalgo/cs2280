@@ -64,6 +64,29 @@ A variable $x_i$ is said to be \textit{relevant} to a boolean function $f$ if th
 
 \end{problem}
 
+\paragraph{Proof by reduction from ZIP:} Assume, for sake of contradiction, that there is a PAC learning algorithm $\mathcal{A}$ that can properly learn the class of Boolean threshold functions in polynomial time (with membership or random examples). We use $\mathcal{A}$ to decide the Zero-One Integer Programming problem, which is NP-complete.
+
+An instance of ZIP consists of vectors $c_1,\dots,c_s, \bar{a}\in{0,1}^n$, integers $b_1,\dots,b_s\in{0,1}$ and $B$ (with $0\le B\le n$). We need to determine if there exists $d\in{0,1}^n$ such that for all $1\le i\le s$, $c_i\cdot d\le b_i$, and $\bar{a}\cdot d \ge B$. Construct the following labeled sample $S$ for a learning problem:
+\begin{itemize}
+    \item For each constraint $i$ with $b_i = 0$, include the example $x = c_i$ with label $\ell(x)=0$.
+    \item For each constraint $i$ with $b_i = 1$, include, for every distinct pair of 1-coordinates $(p,q)$ in $c_i$, an example $x_{p,q}^{(i)}$ that has $x_{p,q}^{(i)}(p)=x_{p,q}^{(i)}(q)=1$ and zeros in all other coordinates, with label $\ell(x_{p,q}^{(i)}) = 0$.
+    \item Include the example $x=\bar{a}$ with label $\ell(x)=1$.
+\end{itemize}
+Intuitively, negative examples encode the constraints (violation should yield output 1) and the single positive example encodes the $\bar{a}\cdot d\ge B$ requirement. Now we claim:
+\begin{enumerate}
+    \item If a satisfying assignment $d$ exists for the ZIP instance, then there is a threshold function $h(y) = 1 \iff y\cdot d \ge 1$ that correctly classifies all examples in $S$. Specifically, set the weight vector to $d$ and threshold $k=1$. For each original constraint $i$: \begin{itemize}
+        \item If $b_i=0$, $d$ satisfies $c_i \cdot d \leq 0$, hence $c_i \cdot d = 0$ and $h(c_i) = 0$ (correct label).
+        \item If $b_i=1$, $d$ satisfies $c_i\cdot d \le 1$. Then for any pair $(p,q)$ of ones in $c_i$, at most one of $p,q$ lies in $d$. Thus $x_{p,q}^{(i)}\cdot d \le 1$, so $h(x_{p,q}^{(i)})=0$ (correct).
+        \item $\bar{a}\cdot d \ge B \ge 1$, so $h(\bar{a}) = 1$ (correct). Therefore $h$ (a threshold function in our class) perfectly fits all examples in $S$.
+    \end{itemize}
+    \item If no satisfying $d$ exists, then no threshold function can perfectly classify $S$. In particular, consider any threshold hypothesis $h_{k,y}(x) = \mathbf{1}{y\cdot x \ge k}$. We examine its performance on the sample: \begin{itemize}
+        \item If $h$ outputs 1 for $\bar{a}$ (to get $\bar{a}$’s label correct), then $y\cdot \bar{a} \ge k$. Since $\bar{a}$ has at most $n$ ones, $k \le n$. For each constraint $i$, because $d$ doesn’t exist, any $y$ must violate at least one constraint. Suppose $y$ violates constraint $j$, meaning $c_j\cdot y \ge b_j+1$ (if $b_j=0$, then $c_j\cdot y \ge 1$; if $b_j=1$, then $c_j\cdot y \ge 2$). Then one of the negative examples derived from $c_j$ will satisfy $y\cdot x \ge k$ and be labeled 1 by $h$, causing an error. For example, if $b_j=0$ and $c_j\cdot y \ge 1$, then $h(c_j)=1$ (since $y\cdot c_j \ge 1 \ge k$) but $\ell(c_j)=0$. If $b_j=1$ and $c_j\cdot y \ge 2$, pick two coordinates $p,q$ where $y$ has ones (contributing to the sum); then $y \cdot x_{p,q}^{(j)} \ge 2 \ge k$, so $h(x_{p,q}^{(j)})=1$ but $\ell(x_{p,q}^{(j)})=0$.
+        \item If $h$ outputs 0 for $\bar{a}$ (to avoid violating some constraint), then $\bar{a}\cdot y < k$. But $\ell(\bar{a})=1$, so $h$ fails on $\bar{a}$.
+    \end{itemize}
+\end{enumerate}
+In either case $h$ makes an error on $S$. In fact, any threshold hypothesis must err on at least one example when no solution exists.
+
+Consequently, if $\mathcal{A}$ could learn threshold functions, we would run $\mathcal{A}$ on the sample $S$. With high probability, it would output a hypothesis $h$. We then simulate $h$ on the examples in $S$ to check its accuracy. If $h$ labels all examples correctly (zero errors), we conclude a satisfying $d$ exists (and indeed $y$ from $h$ is a valid solution for ZIP). If $h$ has any error on $S$, we conclude no solution exists. This procedure runs in randomized polynomial time, deciding the NP-complete problem ZIP. Therefore, NP = RP would follow. By contrapositive, if NP $\neq$ RP, no such polynomial PAC learning algorithm $\mathcal{A}$ can exist. In other words, the class of boolean threshold functions is not PAC-learnable by (proper) threshold hypotheses under the NP $\neq$ RP assumption.
 
 \begin{problem}[15 pts] \textbf{Exact Learning DNFs via Membership Queries.} Prove that the class of $(\log n)$-term DNF is learnable in polynomial time in the exact learning model using membership and equivalence queries.
 
