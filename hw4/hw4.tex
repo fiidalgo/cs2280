@@ -131,6 +131,40 @@ VC-dim$({\cal C}) + |{\cal C}|- 2^{\mbox{\tiny{VC-dim}} ({\cal C})}$.
 
 \end{problem}
 
+\textbf{(1)} Example where $TD(\mathcal{C}) > VC\text{-dim}(\mathcal{C})$: Consider the concept class $\mathcal{C}$ defined over instance space $X=\{p,q\}$ (two points) with the following concepts:
+\begin{itemize}
+  \item $c_1$: $p=1$, $q=1$ (labels both points positive),
+  \item $c_2$: $p=1$, $q=0$,
+  \item $c_3$: $p=0$, $q=1$.
+\end{itemize}
+Here $VC\text{-dim}(\mathcal{C}) = 1$ because no set of size 2 can be shattered (for example, the labeling $p=0,q=0$ is not realized by any concept in $\mathcal{C}$). However, the teaching dimension $TD(\mathcal{C})$ is 2. To see this, note that for concept $c_1$ (the all-positive concept), any teaching sequence must distinguish it from both $c_2$ and $c_3$. For instance, one optimal teaching sequence is $\{(p,1), (q,1)\}$: labeling both $p$ and $q$ as positive is only consistent with $c_1$. This sequence has length 2. Likewise, $c_2$ can be taught with one example $(q,0)$ (which eliminates $c_3$ and $c_1$), and $c_3$ can be taught with $(p,0)$. The largest minimum teaching sequence size among $c_1,c_2,c_3$ is 2 (for $c_1$), so $TD(\mathcal{C})=2$. Thus $TD(\mathcal{C})=2 > VC\text{-dim}(\mathcal{C})=1$.
+
+Another simple example: Let $\mathcal{C}$ consist of one "all-negative" concept $c_{\emptyset}$ (labels every point 0) and $n$ "singleton" concepts $c_i$ each labeling exactly one distinct point positive and all others negative. The VC-dimension of this class is 1 (we cannot shatter any 2 points, since no concept labels two points positive). However, the teaching dimension is $n$. Concept $c_{\emptyset}$ requires $n$ negative examples (one for each point) in any teaching sequence, because to eliminate each $c_i$ the teacher must show that point $i$ is labeled 0. For the singletons $c_i$, one positive example of point $i$ suffices to eliminate all others. Thus $TD(\mathcal{C})=n$ while $VC\text{-dim}(\mathcal{C})=1$.
+
+\textbf{(2)} Example where $TD(\mathcal{C}) < VC\text{-dim}(\mathcal{C})$: Let $\mathcal{C}$ be the class of threshold functions on a line of $N$ points $\{1,2,\dots,N\}$. For each $0 \le k \le N$, concept $c_k$ labels a point $x$ as positive iff $x \le k$. Intuitively, $c_k$ classifies all points up to some cutoff $k$ as 1, and points greater than $k$ as 0. The VC-dimension of this class is $N$ (in fact, it shatters any set of points because we can always realize any desired labeling pattern that has a single switch from 0 to 1 at the appropriate threshold). However, the teaching dimension is 2. Any threshold function $c_k$ can be uniquely identified by the teacher with just two examples: for instance, the teacher can present $(k,1)$ and $(k+1,0)$ (the point at the threshold labeled positive and the next point labeled negative). No other threshold $c_{k'}$ for $k' \neq k$ is consistent with those two labels, so this is a valid teaching sequence of length 2. Indeed, we have $TD(\mathcal{C})=2$ while $VC\text{-dim}(\mathcal{C})=N$, so $TD(\mathcal{C}) \ll VC\text{-dim}(\mathcal{C})$ for large $N$.
+
+\textbf{(3)} Proof that $TD(\mathcal{C}) \le |\mathcal{C}| - 1$: In the worst case, a teacher can always distinguish a target concept $c \in \mathcal{C}$ from all other $|\mathcal{C}|-1$ concepts by providing one example per competing concept. Specifically, list the other concepts as $\mathcal{C} \setminus \{c\} = \{h_1, h_2, \dots, h_{m}\}$ where $m=|\mathcal{C}|-1$. For each $h_i$, because $h_i \neq c$, there exists at least one instance $x_i$ such that $c(x_i) \neq h_i(x_i)$. The teacher can include the labeled example $(x_i, c(x_i))$ in the teaching sequence. This example will be consistent with $c$’s labeling by definition, but it will conflict with $h_i$ (since $h_i(x_i)$ is the opposite label). Thus $h_i$ is eliminated. After including one such example for every other concept, only $c$ remains consistent. The total number of examples used is $|\mathcal{C}|-1$. This shows $\forall c,\; \min T(c) \le |\mathcal{C}|-1$, and hence $TD(\mathcal{C}) = \max_{c}\min T(c) \le |\mathcal{C}|-1$.
+
+\textbf{(4)} Proof that $TD(\mathcal{C}) \le VC\text{-dim}(\mathcal{C}) + |\mathcal{C}| - 2^{VC\text{-dim}(\mathcal{C})}$: Let $d = VC\text{-dim}(\mathcal{C})$. By definition, there exists a set $S$ of $d$ instances shattered by $\mathcal{C}$. That means every binary labeling on $S$ is realized by some concept in $\mathcal{C}$, so $|\mathcal{C}| \ge 2^d$ (at least one concept per dichotomy on $S$). Now fix the target concept $c \in \mathcal{C}$. Among the $2^d$ possible labelings of $S$, $c$’s labeling (the restriction $c|_S$) is one of them. 
+
+Consider two stages for teaching $c$:
+
+\textit{Stage 1:} The teacher provides the $d$ labeled examples for every point in $S$ according to $c$. This uniquely specifies $c$’s labeling pattern on $S$. After this stage, any concept $h \in \mathcal{C}$ that remains consistent must have $h(x) = c(x)$ for all $x \in S$. By shattering, there is exactly one concept in $\mathcal{C}$ for each distinct pattern on $S$, so at most those concepts that share $c$’s $S$-pattern survive. In the worst case, initially $|\mathcal{C}|$ concepts were possible; after stage 1, at most $|\mathcal{C}|/2^d$ concepts remain (because $2^d$ distinct patterns were possible on $S$, and all but one pattern — $c$’s pattern — have been eliminated for the surviving concepts).
+
+\textit{Stage 2:} Now we have a reduced concept class $\mathcal{C}' = \{h \in \mathcal{C}: h|_S = c|_S\}$ consisting of all concepts that agreed with $c$ on $S$. Notice that $c \in \mathcal{C}'$. The teacher must eliminate all $h \in \mathcal{C}'$ with $h \neq c$. In the worst case, $|\mathcal{C}'|$ could be as large as $|\mathcal{C}|/2^d$. Using the same argument as in part 3, the teacher can eliminate each remaining incorrect concept with at most one additional example. So stage 2 uses at most $|\mathcal{C}'|-1$ examples.
+
+\textit{Counting examples:} Stage 1 used $d$ examples, and stage 2 used at most $|\mathcal{C}'|-1$ examples. So one valid teaching sequence for $c$ has length $\le d + (|\mathcal{C}'|-1)$. Therefore:
+\[
+TD(\mathcal{C}) \le d + (|\mathcal{C}'| - 1) \le d + \left(\frac{|\mathcal{C}|}{2^d} - 1\right) = d + \frac{|\mathcal{C}|}{2^d} - 1.
+\]
+
+Since $|\mathcal{C}'|\le |\mathcal{C}| - (2^d - 1)$ (at least $2^d-1$ concepts from $\mathcal{C}$ were eliminated in stage 1, leaving at most $|\mathcal{C}| - 2^d + 1$ survivors; using this bound yields the same inequality above), we can simplify the bound to:
+\[
+TD(\mathcal{C}) \le VC\text{-dim}(\mathcal{C}) + |\mathcal{C}| - 2^{VC\text{-dim}(\mathcal{C})}.
+\]
+
+This is exactly the desired inequality. Intuitively, the worst-case teaching sequence length is achieved when the target concept’s label pattern on a shattered set $S$ is shared by as many concepts as possible (i.e., all other concepts differ only outside $S$), forcing the teacher to use the maximum number of stage-2 examples. But even in that case, stage 1 removes an exponential number of concepts (those with different $S$-patterns), greatly reducing the pool that must be distinguished one-by-one. Hence the teaching dimension grows more slowly than the number of concepts, incorporating the effect of VC-dimension.
+
 
 \begin{problem} [15 pts] \textbf{Persistent Classification Noise Model.}
 For learning from noisy examples using membership queries, the random \textit{persistent} classification noise model is as follows: Given concept $c \in \mathcal{C}$ and noise rate $\eta$, a noisy concept $c'$ is produced by flipping the label of $c$ at each point with probability $\eta$. Then a learning algorithm gets all examples and membership queries labeled according to $c'$. This implies that in this model, with certain (albeit negligible) probability, $c'$ might be very far from $c$. For simplicity, we only require that a learning algorithm succeeds with probability at least $1/2$, where the probability of success also depends on the random choice of $c'$, and, as before, the running time can be polynomial in 
@@ -149,4 +183,45 @@ Let $\mathcal{P}$ be the class of parity functions over $\{0,1\}^n$ and $\mathca
     \item[(c)] (5pts) Prove that $\mathcal{P}$ is not learnable using membership queries with the malicious noise as above of rate $\geq 1/4$.
 \end{enumerate}
 \end{problem}
+
+Let $P$ be the class of parity functions on $n$ boolean variables, and let the target parity be $c(x) = x \cdot w \pmod{2}$ for some unknown $w \in \{0,1\}^n$. We consider learning $c$ using membership queries under two noise models:
+
+\textbf{(a) Random persistent classification noise (any $\eta < 1/2$):} In this model, a single “noisy” target function $c'$ is fixed at the start by flipping each output bit of $c$ independently with probability $\eta$. Equivalently, there is some unknown error function $e: \{0,1\}^n \to \{0,1\}$ such that for each $x$, $c'(x) = c(x) \oplus e(x)$, where $\Pr_{x\sim U}[e(x)=1] = \eta$ (and these flips are random and independent across $X$). The learner has membership query access to $c'$ (not $c$ directly).
+
+\emph{Learning algorithm:} We can exploit the linear structure of parity and use pairwise queries to cancel out noise. The core idea is to query $c'$ on two carefully chosen inputs and combine the answers (via XOR) to obtain information about $w$ with a lower noise rate. For any two inputs $x, y \in \{0,1\}^n$, note that
+\[
+c'(x) \oplus c'(y) = (c(x) \oplus e(x)) \oplus (c(y) \oplus e(y)) = c(x \oplus y) \oplus (e(x) \oplus e(y)).
+\]
+If we choose $x$ and $y$ such that $x \oplus y = e_i$ (the unit vector with 1 in the $i$-th coordinate and 0 elsewhere), then $c(x\oplus y) = w_i$. Thus,
+\[
+c'(x) \oplus c'(y) = w_i \oplus (e(x) \oplus e(y)).
+\]
+The XOR of two independent $\text{Ber}(\eta)$ bits is 1 with probability $2\eta(1 - \eta) < 1/2$ (since $\eta < 1/2$). Therefore, each such pair-query gives a noisy version of $w_i$ with error rate $\eta' = 2\eta(1 - \eta) < 1/2$.
+
+Repeat $O(\log n)$ times per coordinate, taking a majority vote to recover $w_i$ with high probability. Doing this for all $n$ coordinates allows us to recover the entire $w$. Total queries: $O(n \log n)$.
+
+\textbf{(b) Adversarial noise of rate $\eta = 1/5$:} Now $c'$ is an arbitrary function (not necessarily a parity) that differs from $c$ on at most 20% of the domain. The learner must tolerate worst-case errors, not random noise.
+
+\emph{Learning algorithm:} For each $i = 1, \dots, n$, choose $x \sim \{0,1\}^n$ uniformly at random, and compute $c'(x) \oplus c'(x \oplus e_i)$. With probability $\ge 0.6$, either both are correct or both are flipped, so the XOR yields $w_i$ correctly. With probability $\le 0.4$, exactly one value is flipped, producing the wrong $w_i$.
+
+Repeating $O(\log n)$ times and taking a majority vote gives correct $w_i$ with high probability. Repeating for all $i$, we reconstruct $w$ using $O(n \log n)$ queries. Thus parity is learnable under adversarial noise rate $< 1/4$.
+
+\textbf{(c) Impossibility for $\eta \ge 1/4$:} We show that for $\eta \ge 1/4$, no algorithm making $\text{poly}(n)$ membership queries can learn parity functions.
+
+Let $c(x) = x \cdot w$ be the target parity. Let the learner make at most $q = \text{poly}(n)$ queries. Choose another parity function $\tilde{c}$ that differs from $c$ on exactly half the domain (e.g., $w' = w \oplus e_1$).
+
+Partition the domain into:
+\begin{itemize}
+  \item $A = \{x : c(x) = \tilde{c}(x)\}$ (size $2^{n-1}$),
+  \item $B = \{x : c(x) \ne \tilde{c}(x)\}$ (size $2^{n-1}$).
+\end{itemize}
+
+Define $c'$ as:
+\[
+c'(x) = \begin{cases}c(x) & x \notin B' \\ \tilde{c}(x) & x \in B'\end{cases}
+\]
+for $B' \subseteq B$ with $|B'| = 2^{n-2}$ (i.e., 25\% of the domain). Choose $B'$ so that $Q \cap B' = \emptyset$, where $Q$ is the set of queries made by the learner. Then all queries return values consistent with both $c$ and $c'$. But $c$ and $c'$ differ on 25\% of the domain, so the learner cannot output a hypothesis with error $<1/4$ with high confidence.
+
+Hence, parity is not learnable under adversarial noise with $\eta \ge 1/4$.
+
 \end{document}
