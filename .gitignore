@@ -5,3 +5,10 @@
 *.synctex.gz
 
 .DS_Store
+
+# Homework and notes
+hw1/
+hw2/
+hw3/
+hw4/
+notes/
